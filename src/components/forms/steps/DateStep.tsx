@@ -5,22 +5,24 @@ import { motion } from 'framer-motion'
 
 interface DateStepProps {
   data: {
-    dates: {
-      start: Date
-      end: Date
+    duration: {
+      startDate: Date | null
+      endDate: Date | null
     }
   }
-  onNext: (data: { dates: { start: Date; end: Date } }) => void
+  onNext: () => void
   onBack: () => void
+  onUpdate: (data: any) => void
 }
 
-export default function DateStep({ data, onNext, onBack }: DateStepProps) {
-  const [startDate, setStartDate] = useState<Date>(data.dates.start || new Date())
-  const [endDate, setEndDate] = useState<Date>(data.dates.end || new Date())
+export default function DateStep({ data, onNext, onBack, onUpdate }: DateStepProps) {
+  const [startDate, setStartDate] = useState<Date>(data.duration.startDate || new Date())
+  const [endDate, setEndDate] = useState<Date>(data.duration.endDate || new Date())
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onNext({ dates: { start: startDate, end: endDate } })
+    onUpdate({ duration: { startDate, endDate } })
+    onNext()
   }
 
   return (

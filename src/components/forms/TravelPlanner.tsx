@@ -23,14 +23,21 @@ export default function TravelPlanner() {
   const [formData, setFormData] = useState({
     destination: '',
     interests: [] as string[],
+    customInterests: '',
+    budget: {
+      accommodation: 50,
+      food: 30,
+      activities: 20,
+      currency: 'USD',
+    },
     group: {
       adults: 1,
       children: 0,
       childrenAges: []
     },
-    dates: {
-      start: new Date(),
-      end: new Date()
+    duration: {
+      startDate: null as Date | null,
+      endDate: null as Date | null
     }
   })
 
@@ -87,7 +94,6 @@ export default function TravelPlanner() {
         return (
           <SummaryStep
             data={formData}
-            onNext={handleNext}
             onBack={handleBack}
           />
         )
