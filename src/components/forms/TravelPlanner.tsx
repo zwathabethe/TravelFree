@@ -23,7 +23,11 @@ export default function TravelPlanner() {
   const [formData, setFormData] = useState({
     destination: '',
     interests: [] as string[],
-    groupSize: 1,
+    group: {
+      adults: 1,
+      children: 0,
+      childrenAges: []
+    },
     dates: {
       start: new Date(),
       end: new Date()

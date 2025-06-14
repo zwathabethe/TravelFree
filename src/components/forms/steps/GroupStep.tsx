@@ -5,11 +5,13 @@ import { motion } from 'framer-motion'
 
 interface GroupStepProps {
   data: {
-    adults: number
-    children: number
-    childrenAges: number[]
+    group: {
+      adults: number
+      children: number
+      childrenAges: number[]
+    }
   }
-  onUpdate: (data: { group: GroupStepProps['data'] }) => void
+  onUpdate: (data: { group: GroupStepProps['data']['group'] }) => void
   onNext: () => void
   onBack: () => void
 }
@@ -21,17 +23,17 @@ const ageRanges = [
 ]
 
 export default function GroupStep({ data, onUpdate, onNext, onBack }: GroupStepProps) {
-  const [group, setGroup] = useState(data)
+  const [group, setGroup] = useState(data.group)
 
   const handleAdultsChange = (value: number) => {
     setGroup(prev => ({
       ...prev,
-      adults: Math.max(1, value)
+      adults: Math.floor(Math.max(1, value))
     }))
   }
 
   const handleChildrenChange = (value: number) => {
-    const newValue = Math.max(0, value)
+    const newValue = Math.floor(Math.max(0, value))
     setGroup(prev => ({
       ...prev,
       children: newValue,
