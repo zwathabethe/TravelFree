@@ -18,10 +18,11 @@ import {
 interface InterestsStepProps {
   data: {
     interests: string[]
-    customInterests: string[]
+    customInterests: string
   }
-  onNext: (data: { interests: string[], customInterests: string[] }) => void
+  onNext: () => void
   onBack: () => void
+  onUpdate: (data: any) => void
 }
 
 const interests = [
@@ -87,10 +88,12 @@ const interests = [
   }
 ]
 
-export default function InterestsStep({ data, onNext, onBack }: InterestsStepProps) {
+export default function InterestsStep({ data, onNext, onBack, onUpdate }: InterestsStepProps) {
   const [selectedInterests, setSelectedInterests] = useState<string[]>(data.interests || [])
   const [customInterest, setCustomInterest] = useState('')
-  const [customInterests, setCustomInterests] = useState<string[]>(data.customInterests || [])
+  const [customInterests, setCustomInterests] = useState<string[]>(
+    data.customInterests ? data.customInterests.split(',').map(s => s.trim()) : []
+  )
 
   const handleInterestToggle = (interestId: string) => {
     setSelectedInterests(prev =>
@@ -112,10 +115,11 @@ export default function InterestsStep({ data, onNext, onBack }: InterestsStepPro
   }
 
   const handleNext = () => {
-    onNext({
+    onUpdate({
       interests: selectedInterests,
-      customInterests
+      customInterests: customInterests.join(', ')
     })
+    onNext()
   }
 
   return (

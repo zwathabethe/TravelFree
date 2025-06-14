@@ -6,6 +6,7 @@ import DestinationStep from './steps/DestinationStep'
 import InterestsStep from './steps/InterestsStep'
 import GroupStep from './steps/GroupStep'
 import DateStep from './steps/DateStep'
+import BudgetStep from './steps/BudgetStep'
 import SummaryStep from './steps/SummaryStep'
 import AIConversationStep from './steps/AIConversationStep'
 
@@ -14,6 +15,7 @@ const steps = [
   { id: 'interests', title: 'What interests you?' },
   { id: 'group', title: 'Who\'s coming?' },
   { id: 'dates', title: 'When?' },
+  { id: 'budget', title: 'What\'s your budget?' },
   { id: 'summary', title: 'Review' },
   { id: 'ai-conversation', title: 'Plan Your Trip' }
 ]
@@ -25,9 +27,9 @@ export default function TravelPlanner() {
     interests: [] as string[],
     customInterests: '',
     budget: {
-      accommodation: 50,
-      food: 30,
-      activities: 20,
+      accommodation: 0,
+      food: 0,
+      activities: 0,
       currency: 'USD',
     },
     group: {
@@ -92,12 +94,21 @@ export default function TravelPlanner() {
         )
       case 4:
         return (
+          <BudgetStep
+            data={formData}
+            onNext={handleNext}
+            onBack={handleBack}
+            onUpdate={handleUpdateData}
+          />
+        )
+      case 5:
+        return (
           <SummaryStep
             data={formData}
             onBack={handleBack}
           />
         )
-      case 5:
+      case 6:
         return (
           <AIConversationStep
             data={formData}
