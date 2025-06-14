@@ -8,11 +8,22 @@ interface AIConversationStepProps {
   data: {
     destination: string
     interests: string[]
-    dates: {
-      start: Date
-      end: Date
+    customInterests: string
+    budget: {
+      accommodation: number
+      food: number
+      activities: number
+      currency: string
     }
-    groupSize: number
+    duration: {
+      startDate: Date | null
+      endDate: Date | null
+    }
+    group: {
+      adults: number
+      children: number
+      childrenAges: number[]
+    }
   }
   onBack: () => void
 }
@@ -39,9 +50,9 @@ export default function AIConversationStep({ data, onBack }: AIConversationStepP
           messages: [],
           travelData: {
             ...data,
-            dates: {
-              start: data.dates.start.toISOString(),
-              end: data.dates.end.toISOString(),
+            duration: {
+              startDate: data.duration.startDate?.toISOString(),
+              endDate: data.duration.endDate?.toISOString(),
             },
           },
         }),
@@ -91,9 +102,9 @@ export default function AIConversationStep({ data, onBack }: AIConversationStepP
           messages: [...conversation, userMessage],
           travelData: {
             ...data,
-            dates: {
-              start: data.dates.start.toISOString(),
-              end: data.dates.end.toISOString(),
+            duration: {
+              startDate: data.duration.startDate?.toISOString(),
+              endDate: data.duration.endDate?.toISOString(),
             },
           },
         }),
