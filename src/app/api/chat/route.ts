@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const { messages, travelData } = await req.json()
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' })
 
     const systemPrompt = `You are a helpful travel planning assistant. The user is planning a trip with the following details:
       - Destination: ${travelData.destination}

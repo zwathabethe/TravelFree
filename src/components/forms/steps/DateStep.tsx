@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 
 interface DateStepProps {
   data: {
@@ -9,74 +10,80 @@ interface DateStepProps {
       end: Date
     }
   }
-  onNext: () => void
+  onNext: (data: { dates: { start: Date; end: Date } }) => void
   onBack: () => void
-  onUpdate: (data: any) => void
 }
 
-export default function DateStep({ data, onNext, onBack, onUpdate }: DateStepProps) {
-  const [startDate, setStartDate] = useState<string>(
-    data.dates.start.toISOString().split('T')[0]
-  )
-  const [endDate, setEndDate] = useState<string>(
-    data.dates.end.toISOString().split('T')[0]
-  )
+export default function DateStep({ data, onNext, onBack }: DateStepProps) {
+  const [startDate, setStartDate] = useState<Date>(data.dates.start || new Date())
+  const [endDate, setEndDate] = useState<Date>(data.dates.end || new Date())
 
-  const handleNext = () => {
-    if (startDate && endDate) {
-      onUpdate({
-        dates: {
-          start: new Date(startDate),
-          end: new Date(endDate)
-        }
-      })
-      onNext()
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onNext({ dates: { start: startDate, end: endDate } })
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">When do you want to travel?</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Start Date</h3>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            min={new Date().toISOString().split('T')[0]}
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
-        
-        <div>
-          <h3 className="text-lg font-semibold mb-2">End Date</h3>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            min={startDate}
-            className="w-full p-2 border rounded-md"
-          />
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-6"
+    >
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-900">When are you traveling?</h2>
+        <p className="mt-2 text-gray-600">Select your travel dates</p>
       </div>
 
-      <div className="flex justify-between mt-6">
-        <button
-          onClick={onBack}
-          className="px-4 py-2 border rounded-md hover:bg-gray-100"
-        >
-          Back
-        </button>
-        <button 
-          onClick={handleNext}
-          disabled={!startDate || !endDate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
-        >
-          Next
-        </button>
-      </div>
-    </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div>
+            <label htmlFor="start-date" className="block text-sm font-medium text-gray-700">
+              Start Date
+            </label>
+            <input
+              type="date"
+              id="start-date"
+              value={startDate.toISOString().split('T')[0]}
+              onChange={(e) => setStartDate(new Date(e.target.value))}
+              min={new Date().toISOString().split('T')[0]}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="end-date" className="block text-sm font-medium text-gray-700">
+              End Date
+            </label>
+            <input
+              type="date"
+              id="end-date"
+              value={endDate.toISOString().split('T')[0]}
+              onChange={(e) => setEndDate(new Date(e.target.value))}
+              min={startDate.toISOString().split('T')[0]}
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-between">
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-4 py-2 text-gray-600 hover:text-gray-900"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Next
+          </button>
+        </div>
+      </form>
+    </motion.div>
   )
 } 

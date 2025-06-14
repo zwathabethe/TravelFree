@@ -1,84 +1,108 @@
+'use client'
+
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import DestinationStep from './steps/DestinationStep'
 import InterestsStep from './steps/InterestsStep'
-import BudgetStep from './steps/BudgetStep'
-import DurationStep from './steps/DurationStep'
 import GroupStep from './steps/GroupStep'
+import DateStep from './steps/DateStep'
 import SummaryStep from './steps/SummaryStep'
+import AIConversationStep from './steps/AIConversationStep'
 
 const steps = [
-  { id: 'destination', title: 'Destination' },
-  { id: 'interests', title: 'Interests' },
-  { id: 'budget', title: 'Budget' },
-  { id: 'duration', title: 'Duration' },
-  { id: 'group', title: 'Group' },
-  { id: 'summary', title: 'Summary' },
+  { id: 'destination', title: 'Where to?' },
+  { id: 'interests', title: 'What interests you?' },
+  { id: 'group', title: 'Who\'s coming?' },
+  { id: 'dates', title: 'When?' },
+  { id: 'summary', title: 'Review' },
+  { id: 'ai-conversation', title: 'Plan Your Trip' }
 ]
 
 export default function TravelPlanner() {
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({
     destination: '',
-    interests: [],
-    customInterests: '',
-    budget: {
-      accommodation: 0,
-      food: 0,
-      activities: 0,
-      currency: 'USD',
-    },
-    duration: {
-      startDate: null,
-      endDate: null,
-    },
-    group: {
-      adults: 1,
-      children: 0,
-      childrenAges: [],
-    },
+    interests: [] as string[],
+    groupSize: 1,
+    dates: {
+      start: new Date(),
+      end: new Date()
+    }
   })
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
-    }
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1))
   }
 
   const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
-    }
+    setCurrentStep((prev) => Math.max(prev - 1, 0))
   }
 
-  const updateFormData = (data: any) => {
-    setFormData(prev => ({ ...prev, ...data }))
+  const handleUpdateData = (data: any) => {
+    setFormData((prev) => ({ ...prev, ...data }))
   }
 
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return <DestinationStep data={formData.destination} onUpdate={updateFormData} onNext={handleNext} />
+        return (
+          <DestinationStep
+            data={formData}
+            onNext={handleNext}
+            onUpdate={handleUpdateData}
+          />
+        )
       case 1:
-        return <InterestsStep data={formData.interests} customData={formData.customInterests} onUpdate={updateFormData} onNext={handleNext} onBack={handleBack} />
+        return (
+          <InterestsStep
+            data={formData}
+            onNext={handleNext}
+            onBack={handleBack}
+            onUpdate={handleUpdateData}
+          />
+        )
       case 2:
-        return <BudgetStep data={formData.budget} onUpdate={updateFormData} onNext={handleNext} onBack={handleBack} />
+        return (
+          <GroupStep
+            data={formData}
+            onNext={handleNext}
+            onBack={handleBack}
+            onUpdate={handleUpdateData}
+          />
+        )
       case 3:
-        return <DurationStep data={formData.duration} onUpdate={updateFormData} onNext={handleNext} onBack={handleBack} />
+        return (
+          <DateStep
+            data={formData}
+            onNext={handleNext}
+            onBack={handleBack}
+            onUpdate={handleUpdateData}
+          />
+        )
       case 4:
-        return <GroupStep data={formData.group} onUpdate={updateFormData} onNext={handleNext} onBack={handleBack} />
+        return (
+          <SummaryStep
+            data={formData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        )
       case 5:
-        return <SummaryStep data={formData} onBack={handleBack} />
+        return (
+          <AIConversationStep
+            data={formData}
+            onBack={handleBack}
+          />
+        )
       default:
         return null
     }
   }
 
   return (
-    <div className="w-full">
-      {/* Progress Bar */}
+    <div className="max-w-2xl mx-auto p-6">
       <div className="mb-8">
-        <div className="flex justify-between mb-2">
+        <div className="flex justify-between items-center mb-4">
           {steps.map((step, index) => (
             <div
               key={step.id}
@@ -86,21 +110,28 @@ export default function TravelPlanner() {
                 index <= currentStep ? 'text-blue-600' : 'text-gray-400'
               }`}
             >
-              {step.title}
+              <div
+                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-2 ${
+                  index <= currentStep ? 'bg-blue-600 text-white' : 'bg-gray-200'
+                }`}
+              >
+                {index + 1}
+              </div>
+              <div className="text-sm font-medium">{step.title}</div>
             </div>
           ))}
         </div>
-        <div className="h-2 bg-gray-200 rounded-full">
-          <motion.div
-            className="h-full bg-blue-600 rounded-full"
-            initial={{ width: '0%' }}
-            animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            transition={{ duration: 0.3 }}
+        <div className="relative">
+          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 -translate-y-1/2" />
+          <div
+            className="absolute top-1/2 left-0 h-0.5 bg-blue-600 -translate-y-1/2 transition-all duration-300"
+            style={{
+              width: `${(currentStep / (steps.length - 1)) * 100}%`
+            }}
           />
         </div>
       </div>
 
-      {/* Form Steps */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentStep}
