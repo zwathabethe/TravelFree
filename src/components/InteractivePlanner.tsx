@@ -46,17 +46,17 @@ export const InteractivePlanner = () => {
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Scroll to the bottom of the chat container when messages change
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
     }
   }, [messages])
 
   useEffect(() => {
-    // Set the initial message based on the conversation step
-    const initialMessage = getInitialMessage(conversationStep)
-    setMessages([{ role: 'assistant', content: initialMessage }])
-  }, [])
+    if (messages.length === 0) {
+      const initialMessage = getInitialMessage(conversationStep)
+      setMessages([{ role: 'assistant', content: initialMessage }])
+    }
+  }, [conversationStep, messages.length])
 
   const getInitialMessage = (step: ConversationStep): string => {
     switch (step) {
