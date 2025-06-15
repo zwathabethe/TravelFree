@@ -2,6 +2,9 @@
 
 import React, { useState, FormEvent } from 'react';
 import toast from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -65,36 +68,63 @@ const HomePage = () => {
   };
 
   return (
-    <div className="flex h-full">
-      <div className="w-1/3 p-4 bg-gray-100 overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-4">Your Itinerary</h2>
-        <div className="space-y-2">
-          <p><strong>Destination:</strong> {travelData.destination || 'Not set'}</p>
-          <p><strong>Dates:</strong> {travelData.dates || 'Not set'}</p>
-          <p><strong>Interests:</strong> {travelData.interests || 'Not set'}</p>
-          <p><strong>Budget:</strong> {travelData.budget || 'Not set'}</p>
-        </div>
-      </div>
-      <div className="w-2/3 flex flex-col h-[calc(100vh-100px)]">
-        <div className="flex-grow p-4 overflow-y-auto bg-white">
-          {messages.map((msg, index) => (
-            <div key={index} className={`chat ${msg.role === 'user' ? 'chat-end' : 'chat-start'}`}>
-              <div className="chat-bubble">
-                {msg.content}
-              </div>
+    <div className="flex h-screen bg-gray-50">
+      <div className="w-1/3 p-4 border-r">
+        <Card>
+          <CardHeader>
+            <CardTitle>Your Itinerary</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h3 className="font-semibold">Destination</h3>
+              <p className="text-gray-600">{travelData.destination || 'Not set'}</p>
             </div>
-          ))}
-          {isLoading && <div className="chat chat-start"><div className="chat-bubble">Thinking...</div></div>}
+            <div>
+              <h3 className="font-semibold">Dates</h3>
+              <p className="text-gray-600">{travelData.dates || 'Not set'}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Interests</h3>
+              <p className="text-gray-600">{travelData.interests || 'Not set'}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Budget</h3>
+              <p className="text-gray-600">{travelData.budget || 'Not set'}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="w-2/3 flex flex-col h-screen">
+        <div className="flex-grow p-6 overflow-y-auto">
+          <div className="space-y-4">
+            {messages.map((msg, index) => (
+              <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`px-4 py-2 rounded-lg ${msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="px-4 py-2 rounded-lg bg-gray-200">
+                  Thinking...
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 bg-white border-t">
-          <input
+        <form onSubmit={handleSubmit} className="p-4 bg-white border-t flex items-center space-x-2">
+          <Input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-grow"
             placeholder="Tell me about your dream trip..."
             disabled={isLoading}
           />
+          <Button type="submit" disabled={isLoading}>
+            Send
+          </Button>
         </form>
       </div>
     </div>
