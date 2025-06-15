@@ -7,11 +7,20 @@ import Link from 'next/link'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'TravelFree - Personalized Travel Planning',
+  applicationName: 'TravelFree',
+  title: {
+    default: 'TravelFree - Personalized Travel Planning',
+    template: `%s | TravelFree`,
+  },
   description: 'Plan your perfect trip with TravelFree - a personalized travel planning application that helps you create unforgettable experiences.',
   keywords: 'travel, planning, vacation, trip, itinerary, personalized, tourism',
   authors: [{ name: 'TravelFree Team' }],
   robots: 'index, follow',
+  openGraph: {
+    title: 'TravelFree - Personalized Travel Planning',
+    description: 'Plan your perfect trip with TravelFree - a personalized travel planning application that helps you create unforgettable experiences.',
+    siteName: 'TravelFree',
+  },
 }
 
 export const viewport: Viewport = {
